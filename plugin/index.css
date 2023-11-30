@@ -1,0 +1,32 @@
+* {
+    margin: 0;
+    padding:0;
+}
+.lyricsBody {
+    width: 40%;
+    margin-left: 30%;
+    height: 300px;
+    overflow: hidden;
+    padding-top: 14%;
+    background-color: brown;
+    margin-top: 2%;
+    border-radius: 20px;
+}
+
+.lyp {
+    position: relative;
+    text-align: center;
+    color: cadetblue;
+    font-size: 20px;
+}
+
+.lyp ol {
+    transition: all .2s;
+    height: 40px;
+}
+
+.songAudio {
+    width: 100%;
+    position: fixed;
+    bottom: 2%;
+}
