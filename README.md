@@ -1,7 +1,7 @@
 # LyricsPlayer
 
 LyricsPlayer 是一个简单的歌词播放器，可用于在音频播放时显示相应的歌词。
-预览：https://eugenexxxie.github.io/webLyricsPlayer/
+-预览：https://eugenexxxie.github.io/webLyricsPlayer/
 ## 功能特点
 
 - 同步歌词：随着音频播放，歌词会自动同步显示。
