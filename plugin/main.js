@@ -1,57 +1,51 @@
-// jQuery 的文档就绪函数
 $(function () {
-    // 处理歌词滚动动画的变量
-    var eqTimeTake = 0; // 动画的前一个时间位置
-    let eqMarkTop; // 显示歌词的当前顶部位置
+    const lyrics = getLyrics();
+    const $wrapper = $(".lyrics-wrapper");
+    let lastIndex = -1; // 记录上一行索引
 
-    // 使用 getLyrics 函数获取歌词数组
-    var lyrics = getLyrics();
-
-    // 初始化一个字符串，用于默认样式的列表项
-    var lyricsfinl = '<ol>===</ol>';
-
-    // 遍历歌词数组，为每个歌词创建列表项
-    for (i = 0; i < lyrics.length; i++) {
-        lyricsfinl += '<ol>' + lyrics[i].lyrics + '</ol>';
+    // 1. 初始化渲染歌词
+    function initLyrics() {
+        const htmlString = lyrics.map(item => `<ol>${item.lyrics}</ol>`).join('');
+        $wrapper.html(htmlString);
     }
 
-    // 将生成的歌词 HTML 设置在具有类名 "lyp" 的段落中
-    $(".lyp").html(lyricsfinl);
+    initLyrics();
 
-    // 音频 timeupdate 事件监听器，用于与音频播放同步歌词
+    // 2. 监听音频播放进度
     $(".songAudio").on("timeupdate", function () {
-        // 获取音频的当前播放时间
-        let currentTime = $(".songAudio")[0].currentTime;
+        const currentTime = this.currentTime;
 
-        // 初始化用于跟踪当前歌词及其位置的变量
-        let eqMark = 0;
-        let lengthMax = lyrics.length - 1;
+        // 查找当前应该播放哪一行
+        // 原理：找到最后一个时间小于等于当前时间的元素索引
+        let currentIndex = lyrics.findIndex((item, i) => {
+            return currentTime >= item.time && (!lyrics[i + 1] || currentTime < lyrics[i + 1].time);
+        });
 
-        // 寻找当前播放时间对应的歌词
-        for (eqMark; eqMark <= lengthMax && lyrics[eqMark].time <= currentTime; eqMark++) { }
+        // 3. 性能优化：只有当行数改变时才执行动画
+        if (currentIndex !== lastIndex && currentIndex !== -1) {
+            
+            // 更新样式
+            const $allLines = $wrapper.find("ol");
+            $allLines.removeClass("active");
+            const $currentLine = $allLines.eq(currentIndex);
+            $currentLine.addClass("active");
 
-        // 重置所有歌词的透明度和字体大小
-        $("ol").css("opacity", .5);
-        $("ol").css("font-size", "20px");
+            // 计算滚动位置：
+            // 每一行高度50px，为了让当前行居中：
+            // 初始偏移(180px) - (当前索引 * 50px)
+            const rowHeight = 50;
+            const containerCenter = 180; 
+            const newTop = containerCenter - (currentIndex * rowHeight);
 
-        // 获取当前歌词的 jQuery 对象
-        let olNow = $("ol").eq(eqMark);
+            // 使用 CSS transition 配合 jQuery 修改 top
+            $wrapper.css("top", newTop + "px");
 
-        // 设置当前歌词的透明度和字体大小
-        olNow.css("opacity", 1);
-        olNow.css("font-size", "24px");
-
-        // 计算当前歌词的顶部位置
-        eqMarkTop = (eqMark - 1) * -40;
-
-        // 如果顶部位置发生变化，使用动画滚动歌词
-        if (eqTimeTake != eqMarkTop) {
-            $(".lyp").animate({
-                top: eqMarkTop + 'px',
-            });
+            lastIndex = currentIndex;
         }
+    });
 
-        // 更新前一个时间位置的变量
-        eqTimeTake = eqMarkTop;
-    })
-})
+    // 4. 进度条拖动同步（seeked 事件）
+    $(".songAudio").on("seeked", function() {
+        lastIndex = -1; // 重置索引，强制触发一次歌词重定位
+    });
+});

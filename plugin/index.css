@@ -1,32 +1,58 @@
 * {
     margin: 0;
-    padding:0;
+    padding: 0;
+    box-sizing: border-box;
 }
-.lyricsBody {
-    width: 40%;
-    margin-left: 30%;
-    height: 300px;
-    overflow: hidden;
-    padding-top: 14%;
-    background-color: brown;
-    margin-top: 2%;
+
+body {
+    background-color: #2c3e50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.lyricsContainer {
+    width: 80%;
+    max-width: 600px;
+    height: 400px;
+    margin-top: 50px;
+    overflow: hidden; /* 隐藏超出部分 */
+    background-color: rgba(139, 69, 19, 0.8); /* 棕色背景 */
     border-radius: 20px;
-}
-
-.lyp {
     position: relative;
-    text-align: center;
-    color: cadetblue;
-    font-size: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.lyp ol {
-    transition: all .2s;
-    height: 40px;
+.lyrics-wrapper {
+    position: absolute;
+    width: 100%;
+    top: 180px; /* 初始偏移，让第一句在中间 */
+    transition: top 0.3s ease-out;
+    text-align: center;
+}
+
+.lyrics-wrapper ol {
+    height: 50px; /* 每行固定高度 */
+    line-height: 50px;
+    font-size: 18px;
+    color: #cadetblue;
+    opacity: 0.4;
+    transition: all 0.3s;
+    list-style: none;
+}
+
+/* 高亮歌词样式 */
+.lyrics-wrapper ol.active {
+    opacity: 1;
+    font-size: 26px;
+    color: #ffffff;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
 .songAudio {
-    width: 100%;
+    width: 90%;
+    max-width: 800px;
     position: fixed;
-    bottom: 2%;
+    bottom: 30px;
 }
